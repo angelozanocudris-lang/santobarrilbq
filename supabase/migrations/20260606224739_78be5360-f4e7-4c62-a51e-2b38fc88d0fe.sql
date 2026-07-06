@@ -1,0 +1,1 @@
+GRANT SELECT (promo_price, promo_active) ON public.products TO anon, authenticated;

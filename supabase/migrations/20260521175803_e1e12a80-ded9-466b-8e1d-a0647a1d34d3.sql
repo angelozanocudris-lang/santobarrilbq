@@ -1,0 +1,3 @@
+UPDATE products SET image_url='https://ibvrdeyotaxpgotrhcoh.supabase.co/storage/v1/object/public/product-images/burger-cochinita.png' WHERE id='f324d90a-53fb-4c90-9c5d-19e27a9a4ec7';
+UPDATE products SET image_url='https://ibvrdeyotaxpgotrhcoh.supabase.co/storage/v1/object/public/product-images/bacon-roll-chipotle.png' WHERE id='af3b3650-ed74-4560-9536-a2504ad262be';
+UPDATE products SET image_url='https://ibvrdeyotaxpgotrhcoh.supabase.co/storage/v1/object/public/product-images/desgranado-bondiola.png' WHERE id='edabd632-a4a2-4120-8dfa-a97e2aeb75b7';

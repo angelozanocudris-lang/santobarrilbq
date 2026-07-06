@@ -1,0 +1,1 @@
+UPDATE products SET image_url='https://ibvrdeyotaxpgotrhcoh.supabase.co/storage/v1/object/public/product-images/soda-maracuya.png' WHERE id='0efb2eef-e024-4db1-9727-acda0cba327f';

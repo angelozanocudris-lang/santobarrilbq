@@ -1,0 +1,1 @@
+UPDATE products SET image_url='https://ibvrdeyotaxpgotrhcoh.supabase.co/storage/v1/object/public/product-images/festin-x4.png' WHERE id='7ae12a50-31a4-47ef-b41c-61786dfc7b68';

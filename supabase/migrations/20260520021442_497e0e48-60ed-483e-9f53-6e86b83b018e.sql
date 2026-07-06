@@ -1,0 +1,2 @@
+UPDATE public.products SET image_url = 'https://ibvrdeyotaxpgotrhcoh.supabase.co/storage/v1/object/public/product-images/bondiola-pa-2.png' WHERE id = 'e0c3a33c-e515-4ac4-b99b-18a16f97c743';
+UPDATE public.products SET image_url = 'https://ibvrdeyotaxpgotrhcoh.supabase.co/storage/v1/object/public/product-images/chicharron-pa-2.png' WHERE id = '365c8981-178a-4e85-956e-8cb53b82e4be';
