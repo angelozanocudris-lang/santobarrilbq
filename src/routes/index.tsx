@@ -76,11 +76,11 @@ const PORTADA_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${enco
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SANTO BARRIL — Parrilla colombiana | Pide por WhatsApp" },
-      { name: "description", content: "Auténtica parrilla colombiana. Pide a domicilio por WhatsApp." },
+      { title: "SANTO BARRIL" },
+      { name: "description", content: "Donde los chicharrones no son un problema. Pide a domicilio por WhatsApp." },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { property: "og:title", content: "SANTO BARRIL — Parrilla colombiana" },
-      { property: "og:description", content: "Hecho con fuego. Pide por WhatsApp." },
+      { property: "og:title", content: "SANTO BARRIL" },
+      { property: "og:description", content: "Pide por WhatsApp." },
     ],
     links: [
       { rel: "preload", as: "image", href: portada, fetchpriority: "high" } as any,
