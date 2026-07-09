@@ -66,7 +66,7 @@ function useIsOpen() {
 
 
 
-const PORTADA_WHATSAPP = "573009863922";
+const PORTADA_WHATSAPP = "573177921086";
 const PORTADA_INSTAGRAM = "santobarrilbq";
 const PORTADA_DIRECCION = "Calle 84b #38-97";
 const PORTADA_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
