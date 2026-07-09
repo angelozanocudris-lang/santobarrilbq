@@ -11,5 +11,5 @@ export const formatCOP = (value: number) => {
 };
 
 // WhatsApp number for orders (con código país, sin +)
-export const WHATSAPP_NUMBER = "573009863922";
+export const WHATSAPP_NUMBER = "573177921086";
 export const RESTAURANT_NAME = "SANTO BARRIL";
