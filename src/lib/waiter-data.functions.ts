@@ -24,7 +24,9 @@ const waiterItemSchema = z.object({
 const manualOrderSchema = z.object({
   customer_name: z.string().trim().min(1).max(120),
   customer_phone: z.string().trim().min(1).max(40).optional(),
+  customer_address: z.string().trim().max(300).optional(),
   payment_method: z.string().trim().min(1).max(40).optional(),
+  delivery_fee: z.number().min(0).max(100_000_000).optional(),
   notes: z.string().trim().max(500).nullable().optional(),
   items: z.array(waiterItemSchema).min(1).max(50),
 });
@@ -86,7 +88,7 @@ export const waiterCreateOrder = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin.from("orders").insert({
       customer_name: data.customer_name,
       customer_phone: data.customer_phone?.trim() || "En sitio",
-      customer_address: "Mesa en local",
+      customer_address: data.customer_address?.trim() || "Mesa en local",
       payment_method: data.payment_method?.trim() || "Efectivo",
       notes: data.notes?.trim() || null,
       items: priced,
