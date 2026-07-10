@@ -315,23 +315,77 @@ const [waPayment, setWaPayment] = useState("Efectivo");
           },
         });
         toast.success("Productos agregados al pedido");
-      } else {
-        if (!mesa.trim()) return toast.error("Indica la mesa");
-        const mesaLabel = mesa.trim().toLowerCase().startsWith("mesa")
-          ? mesa.trim()
-          : `Mesa ${mesa.trim()}`;
-        await waiterCreateOrder({
-          data: {
-            customer_name: mesaLabel,
-            customer_phone: "En sitio",
-            payment_method: "Efectivo",
-            notes: notes.trim() || null,
-            items: cart.map((i) => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
-            total,
-          },
-        });
-        toast.success("Pedido enviado a cocina");
-      }
+      } else if (mode === "whatsapp") {
+  if (!waClient.trim()) {
+    setBusy(false);
+    return toast.error("Nombre del cliente");
+  }
+
+  if (!waPhone.trim()) {
+    setBusy(false);
+    return toast.error("Teléfono del cliente");
+  }
+
+  if (!waAddress.trim()) {
+    setBusy(false);
+    return toast.error("Dirección");
+  }
+
+  const fullAddress = waRef.trim()
+    ? `${waAddress.trim()} — ${waRef.trim()}`
+    : waAddress.trim();
+
+  await waiterCreateOrder({
+    data: {
+      customer_name: waClient.trim(),
+      customer_phone: waPhone.trim(),
+      customer_address: fullAddress,
+      payment_method: waPayment,
+      delivery_fee: Number(waDelivery) || 0,
+      notes: notes.trim() || null,
+      items: cart.map((i) => ({
+        id: i.id,
+        name: i.name,
+        quantity: i.quantity,
+      })),
+    },
+  });
+
+  toast.success("Pedido de WhatsApp registrado");
+
+  setWaClient("");
+  setWaPhone("");
+  setWaAddress("");
+  setWaRef("");
+  setWaDelivery("");
+  setWaPayment("Efectivo");
+
+} else {
+  if (!mesa.trim()) {
+    setBusy(false);
+    return toast.error("Indica la mesa");
+  }
+
+  const mesaLabel = mesa.trim().toLowerCase().startsWith("mesa")
+    ? mesa.trim()
+    : `Mesa ${mesa.trim()}`;
+
+  await waiterCreateOrder({
+    data: {
+      customer_name: mesaLabel,
+      customer_phone: "En sitio",
+      payment_method: "Efectivo",
+      notes: notes.trim() || null,
+      items: cart.map((i) => ({
+        id: i.id,
+        name: i.name,
+        quantity: i.quantity,
+      })),
+    },
+  });
+
+  toast.success("Pedido enviado a cocina");
+}
       refreshRecent();
       setCart([]);
       setMesa("");
