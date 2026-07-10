@@ -435,7 +435,103 @@ const [waPayment, setWaPayment] = useState("Efectivo");
             )}
           </ul>
         )}
+    
+            {!editingOrder && (
+  <>
+    <div className="mb-3 grid grid-cols-2 gap-1 rounded-full border border-border bg-background/50 p-1 text-xs">
+      <button
+        type="button"
+        onClick={() => setMode("mesa")}
+        className={`rounded-full py-1.5 font-semibold transition ${
+          mode === "mesa"
+            ? "bg-primary text-primary-foreground"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+         Mesa
+      </button>
+
+      <button
+        type="button"
+        onClick={() => setMode("whatsapp")}
+        className={`rounded-full py-1.5 font-semibold transition ${
+          mode === "whatsapp"
+            ? "bg-primary text-primary-foreground"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+         WhatsApp
+      </button>
+    </div>
+
+    {mode === "mesa" ? (
+      <input
+        placeholder="Mesa (ej: 5)"
+        value={mesa}
+        onChange={(e) => setMesa(e.target.value)}
+        className="mb-2 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+      />
+    ) : (
+      <div className="mb-2 space-y-2 rounded-lg border border-primary/30 bg-primary/5 p-2.5">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">
+          Pedido por WhatsApp
+        </p>
+
+        <input
+          placeholder="Nombre del cliente *"
+          value={waClient}
+          onChange={(e) => setWaClient(e.target.value)}
+          className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+        />
+
+        <input
+          type="tel"
+          placeholder="Teléfono *"
+          value={waPhone}
+          onChange={(e) => setWaPhone(e.target.value)}
+          className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+        />
+
+        <input
+          placeholder="Dirección *"
+          value={waAddress}
+          onChange={(e) => setWaAddress(e.target.value)}
+          className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+        />
+
+        <input
+          placeholder="Barrio / referencia (opcional)"
+          value={waRef}
+          onChange={(e) => setWaRef(e.target.value)}
+          className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+        />
+
+        <div className="grid grid-cols-2 gap-2">
+          <select
+            value={waPayment}
+            onChange={(e) => setWaPayment(e.target.value)}
+            className="rounded-lg border border-border bg-input px-2 py-2 text-sm focus:border-primary focus:outline-none"
+          >
+            {PAYMENT_METHODS.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+
+          <input
+            type="number"
+            min={0}
+            placeholder="Domicilio $"
+            value={waDelivery}
+            onChange={(e) => setWaDelivery(e.target.value)}
+            className="rounded-lg border border-border bg-input px-2 py-2 text-sm focus:border-primary focus:outline-none"
+          />
+        </div>
       </div>
+    )}
+  </>
+)}
 
       <aside className="lg:sticky lg:top-20 lg:self-start">
         <div className="rounded-2xl border border-border bg-card p-4">
@@ -472,11 +568,6 @@ const [waPayment, setWaPayment] = useState("Efectivo");
             </>
           )}
           <input
-            placeholder={editingOrder ? "Nota adicional (opcional)" : "Notas (opcional)"}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="mb-3 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
-          />
 
 
           {cart.length === 0 ? (
