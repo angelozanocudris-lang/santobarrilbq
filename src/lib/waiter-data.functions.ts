@@ -86,16 +86,17 @@ export const waiterCreateOrder = createServerFn({ method: "POST" })
     assertWaiter();
     const { priced, total, total_cost } = await priceWaiterItems(data.items);
     const { error } = await supabaseAdmin.from("orders").insert({
-      customer_name: data.customer_name,
-      customer_phone: data.customer_phone?.trim() || "En sitio",
-      customer_address: data.customer_address?.trim() || "Mesa en local",
-      payment_method: data.payment_method?.trim() || "Efectivo",
-      notes: data.notes?.trim() || null,
-      items: priced,
-      total,
-      total_cost,
-      source: "manual",
-    });
+  customer_name: data.customer_name,
+  customer_phone: data.customer_phone?.trim() || "En sitio",
+  customer_address: data.customer_address?.trim() || "Mesa en local",
+  payment_method: data.payment_method?.trim() || "Efectivo",
+  delivery_fee: data.delivery_fee ?? 0,
+  notes: data.notes?.trim() || null,
+  items: priced,
+  total,
+  total_cost,
+  source: "manual",
+});
     if (error) throw new Error(error.message);
     return { ok: true };
   });
