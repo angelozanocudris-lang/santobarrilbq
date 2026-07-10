@@ -158,6 +158,14 @@ function WaiterOrder({ onLogout }: { onLogout: () => void }) {
   const [sideModal, setSideModal] = useState<Product | null>(null);
   const [sideStep, setSideStep] = useState<1 | 2>(1);
   const [chosenSide, setChosenSide] = useState<"Bollo" | "Yuca" | null>(null);
+  const [mode, setMode] = useState<"mesa" | "whatsapp">("mesa");
+
+const [waClient, setWaClient] = useState("");
+const [waPhone, setWaPhone] = useState("");
+const [waAddress, setWaAddress] = useState("");
+const [waRef, setWaRef] = useState("");
+const [waDelivery, setWaDelivery] = useState("");
+const [waPayment, setWaPayment] = useState("Efectivo");
 
   const REQUIRES_SIDE = new Set([
     "chicharron",
