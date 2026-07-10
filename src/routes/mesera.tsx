@@ -486,14 +486,14 @@ function WaiterOrder({ onLogout }: { onLogout: () => void }) {
                   onClick={() => setMode("mesa")}
                   className={`rounded-full py-1.5 font-semibold transition ${mode === "mesa" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 >
-                  🍽️ Mesa
+                   Mesa
                 </button>
                 <button
                   type="button"
                   onClick={() => setMode("whatsapp")}
                   className={`rounded-full py-1.5 font-semibold transition ${mode === "whatsapp" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 >
-                  💬 WhatsApp
+                   WhatsApp
                 </button>
               </div>
               {mode === "mesa" ? (
