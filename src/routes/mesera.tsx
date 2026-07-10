@@ -159,13 +159,12 @@ function WaiterOrder({ onLogout }: { onLogout: () => void }) {
   const [sideStep, setSideStep] = useState<1 | 2>(1);
   const [chosenSide, setChosenSide] = useState<"Bollo" | "Yuca" | null>(null);
   const [mode, setMode] = useState<"mesa" | "whatsapp">("mesa");
-
-const [waClient, setWaClient] = useState("");
-const [waPhone, setWaPhone] = useState("");
-const [waAddress, setWaAddress] = useState("");
-const [waRef, setWaRef] = useState("");
-const [waDelivery, setWaDelivery] = useState("");
-const [waPayment, setWaPayment] = useState("Efectivo");
+  const [waClient, setWaClient] = useState("");
+  const [waPhone, setWaPhone] = useState("");
+  const [waAddress, setWaAddress] = useState("");
+  const [waRef, setWaRef] = useState("");
+  const [waPayment, setWaPayment] = useState("Efectivo");
+  const [waDelivery, setWaDelivery] = useState("");
 
   const REQUIRES_SIDE = new Set([
     "chicharron",
@@ -316,76 +315,40 @@ const [waPayment, setWaPayment] = useState("Efectivo");
         });
         toast.success("Productos agregados al pedido");
       } else if (mode === "whatsapp") {
-  if (!waClient.trim()) {
-    setBusy(false);
-    return toast.error("Nombre del cliente");
-  }
-
-  if (!waPhone.trim()) {
-    setBusy(false);
-    return toast.error("Teléfono del cliente");
-  }
-
-  if (!waAddress.trim()) {
-    setBusy(false);
-    return toast.error("Dirección");
-  }
-
-  const fullAddress = waRef.trim()
-    ? `${waAddress.trim()} — ${waRef.trim()}`
-    : waAddress.trim();
-
-  await waiterCreateOrder({
-    data: {
-      customer_name: waClient.trim(),
-      customer_phone: waPhone.trim(),
-      customer_address: fullAddress,
-      payment_method: waPayment,
-      delivery_fee: Number(waDelivery) || 0,
-      notes: notes.trim() || null,
-      items: cart.map((i) => ({
-        id: i.id,
-        name: i.name,
-        quantity: i.quantity,
-      })),
-    },
-  });
-
-  toast.success("Pedido de WhatsApp registrado");
-
-  setWaClient("");
-  setWaPhone("");
-  setWaAddress("");
-  setWaRef("");
-  setWaDelivery("");
-  setWaPayment("Efectivo");
-
-} else {
-  if (!mesa.trim()) {
-    setBusy(false);
-    return toast.error("Indica la mesa");
-  }
-
-  const mesaLabel = mesa.trim().toLowerCase().startsWith("mesa")
-    ? mesa.trim()
-    : `Mesa ${mesa.trim()}`;
-
-  await waiterCreateOrder({
-    data: {
-      customer_name: mesaLabel,
-      customer_phone: "En sitio",
-      payment_method: "Efectivo",
-      notes: notes.trim() || null,
-      items: cart.map((i) => ({
-        id: i.id,
-        name: i.name,
-        quantity: i.quantity,
-      })),
-    },
-  });
-
-  toast.success("Pedido enviado a cocina");
-}
+        if (!waClient.trim()) { setBusy(false); return toast.error("Nombre del cliente"); }
+        if (!waPhone.trim()) { setBusy(false); return toast.error("Teléfono del cliente"); }
+        if (!waAddress.trim()) { setBusy(false); return toast.error("Dirección"); }
+        const fullAddress = waRef.trim() ? `${waAddress.trim()} — ${waRef.trim()}` : waAddress.trim();
+        const deliveryFee = Number(waDelivery) || 0;
+        await waiterCreateOrder({
+          data: {
+            customer_name: waClient.trim(),
+            customer_phone: waPhone.trim(),
+            customer_address: fullAddress,
+            payment_method: waPayment,
+            delivery_fee: deliveryFee,
+            notes: notes.trim() || null,
+            items: cart.map((i) => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
+          },
+        });
+        toast.success("Pedido de WhatsApp registrado");
+        setWaClient(""); setWaPhone(""); setWaAddress(""); setWaRef(""); setWaDelivery(""); setWaPayment("Efectivo");
+      } else {
+        if (!mesa.trim()) { setBusy(false); return toast.error("Indica la mesa"); }
+        const mesaLabel = mesa.trim().toLowerCase().startsWith("mesa")
+          ? mesa.trim()
+          : `Mesa ${mesa.trim()}`;
+        await waiterCreateOrder({
+          data: {
+            customer_name: mesaLabel,
+            customer_phone: "En sitio",
+            payment_method: "Efectivo",
+            notes: notes.trim() || null,
+            items: cart.map((i) => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
+          },
+        });
+        toast.success("Pedido enviado a cocina");
+      }
       refreshRecent();
       setCart([]);
       setMesa("");
@@ -489,103 +452,7 @@ const [waPayment, setWaPayment] = useState("Efectivo");
             )}
           </ul>
         )}
-    
-            {!editingOrder && (
-  <>
-    <div className="mb-3 grid grid-cols-2 gap-1 rounded-full border border-border bg-background/50 p-1 text-xs">
-      <button
-        type="button"
-        onClick={() => setMode("mesa")}
-        className={`rounded-full py-1.5 font-semibold transition ${
-          mode === "mesa"
-            ? "bg-primary text-primary-foreground"
-            : "text-muted-foreground hover:text-foreground"
-        }`}
-      >
-         Mesa
-      </button>
-
-      <button
-        type="button"
-        onClick={() => setMode("whatsapp")}
-        className={`rounded-full py-1.5 font-semibold transition ${
-          mode === "whatsapp"
-            ? "bg-primary text-primary-foreground"
-            : "text-muted-foreground hover:text-foreground"
-        }`}
-      >
-         WhatsApp
-      </button>
-    </div>
-
-    {mode === "mesa" ? (
-      <input
-        placeholder="Mesa (ej: 5)"
-        value={mesa}
-        onChange={(e) => setMesa(e.target.value)}
-        className="mb-2 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
-      />
-    ) : (
-      <div className="mb-2 space-y-2 rounded-lg border border-primary/30 bg-primary/5 p-2.5">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">
-          Pedido por WhatsApp
-        </p>
-
-        <input
-          placeholder="Nombre del cliente *"
-          value={waClient}
-          onChange={(e) => setWaClient(e.target.value)}
-          className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
-        />
-
-        <input
-          type="tel"
-          placeholder="Teléfono *"
-          value={waPhone}
-          onChange={(e) => setWaPhone(e.target.value)}
-          className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
-        />
-
-        <input
-          placeholder="Dirección *"
-          value={waAddress}
-          onChange={(e) => setWaAddress(e.target.value)}
-          className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
-        />
-
-        <input
-          placeholder="Barrio / referencia (opcional)"
-          value={waRef}
-          onChange={(e) => setWaRef(e.target.value)}
-          className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
-        />
-
-        <div className="grid grid-cols-2 gap-2">
-          <select
-            value={waPayment}
-            onChange={(e) => setWaPayment(e.target.value)}
-            className="rounded-lg border border-border bg-input px-2 py-2 text-sm focus:border-primary focus:outline-none"
-          >
-            {PAYMENT_METHODS.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
-
-          <input
-            type="number"
-            min={0}
-            placeholder="Domicilio $"
-            value={waDelivery}
-            onChange={(e) => setWaDelivery(e.target.value)}
-            className="rounded-lg border border-border bg-input px-2 py-2 text-sm focus:border-primary focus:outline-none"
-          />
-        </div>
       </div>
-    )}
-  </>
-)}
 
       <aside className="lg:sticky lg:top-20 lg:self-start">
         <div className="rounded-2xl border border-border bg-card p-4">
@@ -613,14 +480,88 @@ const [waPayment, setWaPayment] = useState("Efectivo");
           )}
           {!editingOrder && (
             <>
-              <input
-                placeholder="Mesa (ej: 5)"
-                value={mesa}
-                onChange={(e) => setMesa(e.target.value)}
-                className="mb-2 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
-              />
+              <div className="mb-3 grid grid-cols-2 gap-1 rounded-full border border-border bg-background/50 p-1 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setMode("mesa")}
+                  className={`rounded-full py-1.5 font-semibold transition ${mode === "mesa" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  🍽️ Mesa
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode("whatsapp")}
+                  className={`rounded-full py-1.5 font-semibold transition ${mode === "whatsapp" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  💬 WhatsApp
+                </button>
+              </div>
+              {mode === "mesa" ? (
+                <input
+                  placeholder="Mesa (ej: 5)"
+                  value={mesa}
+                  onChange={(e) => setMesa(e.target.value)}
+                  className="mb-2 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                />
+              ) : (
+                <div className="mb-2 space-y-2 rounded-lg border border-primary/30 bg-primary/5 p-2.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">Pedido por WhatsApp</p>
+                  <input
+                    placeholder="Nombre del cliente *"
+                    value={waClient}
+                    onChange={(e) => setWaClient(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Teléfono *"
+                    value={waPhone}
+                    onChange={(e) => setWaPhone(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  />
+                  <input
+                    placeholder="Dirección *"
+                    value={waAddress}
+                    onChange={(e) => setWaAddress(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  />
+                  <input
+                    placeholder="Barrio / referencia (opcional)"
+                    value={waRef}
+                    onChange={(e) => setWaRef(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  />
+                  <div className="grid grid-cols-2 gap-2">
+                    <select
+                      value={waPayment}
+                      onChange={(e) => setWaPayment(e.target.value)}
+                      className="rounded-lg border border-border bg-input px-2 py-2 text-sm focus:border-primary focus:outline-none"
+                    >
+                      {PAYMENT_METHODS.map((m) => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      min={0}
+                      placeholder="Domicilio $"
+                      value={waDelivery}
+                      onChange={(e) => setWaDelivery(e.target.value)}
+                      className="rounded-lg border border-border bg-input px-2 py-2 text-sm focus:border-primary focus:outline-none"
+                    />
+                  </div>
+                </div>
+              )}
             </>
           )}
+          <input
+            placeholder={editingOrder ? "Nota adicional (opcional)" : "Notas (opcional)"}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="mb-3 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:border-primary focus:outline-none"
+          />
+
+
           {cart.length === 0 ? (
             <p className="py-6 text-center text-sm text-muted-foreground">
               Toca productos para agregar.
@@ -654,16 +595,30 @@ const [waPayment, setWaPayment] = useState("Efectivo");
             </ul>
           )}
 
+          {!editingOrder && mode === "whatsapp" && (Number(waDelivery) || 0) > 0 && (
+            <div className="flex items-center justify-between pt-2 text-xs text-muted-foreground">
+              <span>Subtotal</span>
+              <span>{formatCOP(total)}</span>
+            </div>
+          )}
+          {!editingOrder && mode === "whatsapp" && (Number(waDelivery) || 0) > 0 && (
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>Domicilio</span>
+              <span>{formatCOP(Number(waDelivery) || 0)}</span>
+            </div>
+          )}
           <div className="flex items-center justify-between border-t border-border pt-3 text-sm">
             <span className="text-muted-foreground">Total</span>
-            <span className="font-display text-xl">{formatCOP(total)}</span>
+            <span className="font-display text-xl">
+              {formatCOP(total + (!editingOrder && mode === "whatsapp" ? Number(waDelivery) || 0 : 0))}
+            </span>
           </div>
           <button
             onClick={submit}
             disabled={busy || cart.length === 0}
             className="mt-3 w-full rounded-full bg-primary py-2.5 font-semibold text-primary-foreground disabled:opacity-50"
           >
-            {busy ? "Enviando..." : editingOrder ? "Agregar al pedido" : "Guardar pedido"}
+            {busy ? "Enviando..." : editingOrder ? "Agregar al pedido" : mode === "whatsapp" ? "Registrar pedido WhatsApp" : "Guardar pedido"}
           </button>
           <Link
             to="/"
