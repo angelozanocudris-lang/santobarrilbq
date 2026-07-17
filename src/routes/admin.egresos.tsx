@@ -188,7 +188,38 @@ function EgresosAdmin() {
       toast.error(e instanceof Error ? e.message : "Error al eliminar");
     }
   }
+const allSelected = filtered.length > 0 && filtered.every((i) => selectedIds.has(i.id));
 
+function toggleSelect(id: string) {
+  setSelectedIds((prev) => {
+    const next = new Set(prev);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    return next;
+  });
+}
+
+function toggleSelectAll() {
+  setSelectedIds((prev) => {
+    const next = new Set(prev);
+    if (allSelected) for (const i of filtered) next.delete(i.id);
+    else for (const i of filtered) next.add(i.id);
+    return next;
+  });
+}
+
+async function removeSelected() {
+  if (selectedIds.size === 0) return;
+  if (!confirm(`¿Eliminar ${selectedIds.size} registro(s) seleccionado(s)?`)) return;
+  try {
+    await Promise.all(Array.from(selectedIds).map((id) => adminDeleteExpense({ data: { id } })));
+    toast.success(`${selectedIds.size} registro(s) eliminados`);
+    setSelectedIds(new Set());
+    load();
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : "Error al eliminar");
+  }
+}
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
