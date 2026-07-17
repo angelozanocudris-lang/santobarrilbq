@@ -167,47 +167,52 @@ function OrdersAdmin() {
     ];
     const rows: (string | number)[][] = [];
     for (const o of filteredOrders) {
-      const items = o.items || [];
-      const fecha = new Date(o.created_at).toLocaleString("es-CO");
-      const dayNum = o.daily_number != null ? String(o.daily_number) : "";
-      const orderNum = o.order_number || "";
-      const fee = Number(o.delivery_fee) || 0;
-      const grand = Number(o.total) + fee;
-      const payStatus = o.payment_status === "pagado" ? "Pagado" : "Pendiente";
-      if (items.length === 0) {
-        rows.push([dayNum, orderNum, fecha, o.source, o.status, payStatus, o.customer_name, o.customer_phone, o.customer_address, o.payment_method, "", "", "", "", "", "", "", o.notes || "", o.total, fee, grand]);
-        continue;
-      }
-      items.forEach((i, idx) => {
-        const price = Number(i.price) || 0;
-        const cost = Number(i.cost) || 0;
-        const qty = Number(i.quantity) || 0;
-        const isFirst = idx === 0;
-        rows.push([
-          isFirst ? dayNum : "",
-          isFirst ? orderNum : "",
-          isFirst ? fecha : "",
-          isFirst ? o.source : "",
-          isFirst ? o.status : "",
-          isFirst ? payStatus : "",
-          isFirst ? o.customer_name : "",
-          isFirst ? o.customer_phone : "",
-          isFirst ? o.customer_address : "",
-          isFirst ? o.payment_method : "",
-          i.name,
-          qty,
-          price,
-          cost,
-          price * qty,
-          cost * qty,
-          (price - cost) * qty,
-          isFirst ? (o.notes || "") : "",
-          isFirst ? o.total : "",
-          isFirst ? fee : "",
-          isFirst ? grand : "",
-        ]);
-      });
-    }
+  const items = o.items || [];
+  const fecha = new Date(o.created_at).toLocaleString("es-CO");
+  const dayNum = o.daily_number != null ? String(o.daily_number) : "";
+  const orderNum = o.order_number || "";
+  const fee = Number(o.delivery_fee) || 0;
+  const grand = Number(o.total) + fee;
+  const payStatus = o.payment_status === "pagado" ? "Pagado" : "Pendiente";
+  // Pedidos manuales (mesa/local): solo se conserva el cliente (mesa) y
+  // se dejan vacíos celular y dirección. Pedidos web: se exportan completos.
+  const isManual = o.source === "manual";
+  const phoneOut = isManual ? "" : o.customer_phone;
+  const addressOut = isManual ? "" : o.customer_address;
+  if (items.length === 0) {
+    rows.push([dayNum, orderNum, fecha, o.source, o.status, payStatus, o.customer_name, phoneOut, addressOut, o.payment_method, "", "", "", "", "", "", "", o.notes || "", o.total, fee, grand]);
+    continue;
+  }
+  items.forEach((i, idx) => {
+    const price = Number(i.price) || 0;
+    const cost = Number(i.cost) || 0;
+    const qty = Number(i.quantity) || 0;
+    const isFirst = idx === 0;
+    rows.push([
+      isFirst ? dayNum : "",
+      isFirst ? orderNum : "",
+      isFirst ? fecha : "",
+      isFirst ? o.source : "",
+      isFirst ? o.status : "",
+      isFirst ? payStatus : "",
+      isFirst ? o.customer_name : "",
+      isFirst ? phoneOut : "",
+      isFirst ? addressOut : "",
+      isFirst ? o.payment_method : "",
+      i.name,
+      qty,
+      price,
+      cost,
+      price * qty,
+      cost * qty,
+      (price - cost) * qty,
+      isFirst ? (o.notes || "") : "",
+      o.total,
+      fee,
+      grand,
+    ]);
+  });
+}
     const csv = [header, ...rows]
       .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
       .join("\n");
