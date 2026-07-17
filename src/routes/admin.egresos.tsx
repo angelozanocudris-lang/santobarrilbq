@@ -307,8 +307,18 @@ async function removeSelected() {
         <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full text-left text-sm">
             <thead className="bg-secondary text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="px-4 py-3">Fecha</th>
+  <tr>
+    <th className="px-2 py-3 text-center">
+      <input
+        type="checkbox"
+        checked={allSelected}
+        onChange={toggleSelectAll}
+        className="h-4 w-4 cursor-pointer accent-primary"
+        title="Seleccionar todos"
+      />
+    </th>
+    <th className="px-4 py-3">Fecha</th>
+    ...
                 <th className="px-4 py-3">Categoría</th>
                 <th className="px-4 py-3">Descripción</th>
                 <th className="px-4 py-3 text-right">Cantidad</th>
