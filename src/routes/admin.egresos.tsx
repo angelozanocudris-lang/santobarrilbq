@@ -246,7 +246,14 @@ async function removeSelected() {
       </div>
 
       <div className="mb-5 flex flex-wrap items-center justify-end gap-2">
-        <select
+       {selectedIds.size > 0 && (
+  <button
+    onClick={removeSelected}
+    className="flex items-center gap-2 rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-white hover:bg-destructive/90"
+  >
+    <Trash2 className="h-4 w-4" /> Eliminar {selectedIds.size}
+  </button>
+)} <select
           value={filterCat}
           onChange={(e) => setFilterCat(e.target.value)}
           className="rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary focus:border-primary focus:outline-none"
