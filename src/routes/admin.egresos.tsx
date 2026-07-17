@@ -329,64 +329,73 @@ async function removeSelected() {
             </thead>
             <tbody className="divide-y divide-border">
               {filtered.map((e) => {
-                const total = Number(e.amount) * Number(e.quantity);
-                const catItem = e.catalog_item_id ? catalogMap[e.catalog_item_id] : null;
-                const displayName = catItem ? catItem.name : e.description || "—";
-                return (
-                  <tr key={e.id} className="hover:bg-secondary/40">
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {new Date(e.expense_date + "T00:00:00").toLocaleDateString("es-CO")}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="rounded-full bg-primary/15 px-2 py-0.5 text-xs text-accent">
-                        {e.category}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      {displayName}
-                      {catItem?.unit && (
-                        <span className="ml-1 text-xs text-muted-foreground">({catItem.unit})</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-right">{e.quantity}</td>
-                    <td className="px-4 py-3 text-right">{formatCOP(Number(e.amount))}</td>
-                    <td className="px-4 py-3 text-right font-semibold">{formatCOP(total)}</td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-2">
-                        {catItem && (
-                          <button
-                            onClick={() => setHistoryItem(catItem)}
-                            className="text-muted-foreground hover:text-accent"
-                            title="Ver historial"
-                          >
-                            <History className="h-4 w-4" />
-                          </button>
-                        )}
-                        <button
-                          onClick={() => {
-                            setEditing(e);
-                            setShowForm(true);
-                          }}
-                          className="text-muted-foreground hover:text-accent"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => remove(e.id)}
-                          className="text-muted-foreground hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">
-                    Sin registros aún.
-                  </td>
+  const total = Number(e.amount) * Number(e.quantity);
+  const catItem = e.catalog_item_id ? catalogMap[e.catalog_item_id] : null;
+  const displayName = catItem ? catItem.name : e.description || "—";
+  const isSelected = selectedIds.has(e.id);
+  return (
+    <tr key={e.id} className={`hover:bg-secondary/40 ${isSelected ? "bg-primary/5" : ""}`}>
+      <td className="px-2 py-3 text-center">
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={() => toggleSelect(e.id)}
+          className="h-4 w-4 cursor-pointer accent-primary"
+        />
+      </td>
+      <td className="px-4 py-3 text-muted-foreground">
+        {new Date(e.expense_date + "T00:00:00").toLocaleDateString("es-CO")}
+      </td>
+      <td className="px-4 py-3">
+        <span className="rounded-full bg-primary/15 px-2 py-0.5 text-xs text-accent">
+          {e.category}
+        </span>
+      </td>
+      <td className="px-4 py-3">
+        {displayName}
+        {catItem?.unit && (
+          <span className="ml-1 text-xs text-muted-foreground">({catItem.unit})</span>
+        )}
+      </td>
+      <td className="px-4 py-3 text-right">{e.quantity}</td>
+      <td className="px-4 py-3 text-right">{formatCOP(Number(e.amount))}</td>
+      <td className="px-4 py-3 text-right font-semibold">{formatCOP(total)}</td>
+      <td className="px-4 py-3 text-right">
+        <div className="flex justify-end gap-2">
+          {catItem && (
+            <button
+              onClick={() => setHistoryItem(catItem)}
+              className="text-muted-foreground hover:text-accent"
+              title="Ver historial"
+            >
+              <History className="h-4 w-4" />
+            </button>
+          )}
+          <button
+            onClick={() => {
+              setEditing(e);
+              setShowForm(true);
+            }}
+            className="text-muted-foreground hover:text-accent"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => remove(e.id)}
+            className="text-muted-foreground hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+})}
+         {filtered.length === 0 && (
+           <tr>
+           <td colSpan={8} className="px-4 py-10 text-center text-muted-foreground">
+            Sin registros aún.
+ </td>  
                 </tr>
               )}
             </tbody>
