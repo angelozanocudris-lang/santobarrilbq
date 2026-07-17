@@ -114,7 +114,7 @@ function EgresosAdmin() {
   const [showCatalog, setShowCatalog] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   const [historyItem, setHistoryItem] = useState<CatalogItem | null>(null);
-
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   async function load() {
     setLoading(true);
     try {
